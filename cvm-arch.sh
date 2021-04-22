@@ -23,7 +23,7 @@ if [[ $diskdev_size -lt 10 ]]; then
     echo [*] Using configuration: ${mainpart_size}G main partition, no swap
 else
     mainpart_size=$(( $diskdev_size-8 ))
-    echo [*] Using configuration: ${mainpart_size}G main partition, ${swap_size}G swap
+    echo [*] Using configuration: ${mainpart_size}G main partition
 fi
 
 echo [*] Partitioning the disk
@@ -54,15 +54,21 @@ mount "${diskdev}1" /mnt
 swapon "${diskdev}2"
 
 echo [*] Pacstrapping
-pacstrap /mnt base linux grub sudo dhcpcd nano
+while true; do
+    pacstrap /mnt base linux grub sudo dhcpcd nano && break || echo [!] Failed pacstrap, retrying
+done
 
 echo [*] Generating fstab
 genfstab -U /mnt >> /mnt/etc/fstab
 
 echo [*] Entering stage 2
-curl https://raw.githubusercontent.com/totallyNotAUser/cvm-arch/main/stage2.sh -o /mnt/stage2.sh
-chmod +x /mnt/stage2.sh
-arch-chroot /mnt /stage2.sh
+while true; do
+    {
+        curl https://raw.githubusercontent.com/totallyNotAUser/cvm-arch/main/stage2.sh -o /mnt/stage2.sh
+        chmod +x /mnt/stage2.sh
+        arch-chroot /mnt /stage2.sh
+    } && break || echo [!] Failed to download stage 2, retrying
+done
 
 echo [*] Finished stage 2
 rm /mnt/stage2.sh
