@@ -3,14 +3,17 @@
 echo [***]     Arch Linux installer by totallyNotAUser     [***]
 echo [***] made specifically for CollabVM virtual machines [***]
 
-read -p "[?] Enter disk: " diskdev
+echo [*] Autodetecting disk
+[[ -e /dev/sda ]] && diskdev="/dev/sda"
+[[ -e /dev/vda ]] && diskdev="/dev/vda"
+[[ "$diskdev" == "" ]] && read -p "[?] Failed to autodetect, enter disk: " diskdev
+echo [*] Using $diskdev as disk
 
 echo [*] Disabling ctrl-c and ctrl-alt-del
-trap '' SIGINT
+trap '' 2
+trap '' 9
+trap '' 15
 systemctl mask ctrl-alt-del.target
-for i in {2..6}; do
-    systemctl mask getty@tty${i}.service
-done
 
 timedatectl set-ntp true
 
@@ -66,7 +69,7 @@ while true; do
     {
         curl https://raw.githubusercontent.com/totallyNotAUser/cvm-arch/main/stage2.sh -o /mnt/stage2.sh
         chmod +x /mnt/stage2.sh
-        arch-chroot /mnt /stage2.sh
+        arch-chroot /mnt /stage2.sh "$diskdev"
     } && break || echo [!] Failed to download stage 2, retrying
 done
 
