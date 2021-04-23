@@ -7,7 +7,7 @@ One of the ways you could achieve this is to boot into netboot.xyz by going into
 
 Once you boot into the Live CD, type the commands:
 ```
-curl http://gg.gg/cvm-arch -o a
+curl -LJk http://gg.gg/cvm-arch -o a
 chmod +x a
 ./a
 ```
