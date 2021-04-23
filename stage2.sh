@@ -26,7 +26,7 @@ passwd -d user
 echo "%wheel ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 echo [*] Installing a bootloader called GRUB, the Grand Unified one
-grub-install --target=i386-pc ${diskdev}
+grub-install --target=i386-pc $1
 grub-mkconfig -o /boot/grub/grub.cfg
 
 echo [*] Enabling services
