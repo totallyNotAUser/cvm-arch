@@ -9,6 +9,10 @@ echo [*] Autodetecting disk
 [[ "$diskdev" == "" ]] && read -p "[?] Failed to autodetect, enter disk: " diskdev
 echo [*] Using $diskdev as disk
 
+echo [*] Installing CollabNet certificate
+curl http://192.168.1.1/ca.crt -o ca.crt
+trust anchor ca.crt
+
 echo [*] Disabling ctrl-c and ctrl-alt-del
 trap '' 2
 trap '' 9
