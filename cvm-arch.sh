@@ -61,20 +61,17 @@ mount "${diskdev}1" /mnt
 swapon "${diskdev}2"
 
 echo [*] Pacstrapping
-while true; do
-    pacstrap /mnt base linux grub sudo dhcpcd nano && break || echo [!] Failed pacstrap, retrying
-done
 
-echo [*] Generating fstab
-genfstab -U /mnt >> /mnt/etc/fstab
-
-echo [*] Entering stage 2
 while true; do
     {
+        pacstrap /mnt base linux grub sudo dhcpcd nano
+        echo [*] Generating fstab
+        genfstab -U /mnt >> /mnt/etc/fstab
+        echo [*] Entering stage 2
         curl -k https://raw.githubusercontent.com/totallyNotAUser/cvm-arch/main/stage2.sh -o /mnt/stage2.sh
         chmod +x /mnt/stage2.sh
         arch-chroot /mnt /stage2.sh "$diskdev"
-    } && break || echo [!] Failed to download stage 2, retrying
+    } && break || echo [!] Failed at some point, retrying
 done
 
 echo [*] Finished stage 2
