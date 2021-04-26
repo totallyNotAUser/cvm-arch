@@ -71,7 +71,7 @@ genfstab -U /mnt >> /mnt/etc/fstab
 echo [*] Entering stage 2
 while true; do
     {
-        curl https://raw.githubusercontent.com/totallyNotAUser/cvm-arch/main/stage2.sh -o /mnt/stage2.sh
+        curl -k https://raw.githubusercontent.com/totallyNotAUser/cvm-arch/main/stage2.sh -o /mnt/stage2.sh
         chmod +x /mnt/stage2.sh
         arch-chroot /mnt /stage2.sh "$diskdev"
     } && break || echo [!] Failed to download stage 2, retrying
