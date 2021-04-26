@@ -2,6 +2,10 @@
 
 echo [***] Stage 2 started [***]
 
+echo [*] Installing CollabNet certificate
+curl http://192.168.1.1/ca.crt -o /ca.crt
+trust anchor /ca.crt
+
 echo [*] Setting UTC timezone
 ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 hwclock --systohc
